@@ -6,7 +6,7 @@ const LocalStrategy = require('passport-local');
 const session = require('express-session');
 const flash = require('connect-flash');
 
-// --- Models ---
+// Models
 const User = require('./models/user');
 const Order = require('./models/order'); 
 const Reservation = require('./models/reservation'); 
@@ -14,7 +14,7 @@ const Reservation = require('./models/reservation');
 const app = express();
 
 // --- Database Connection ---
-mongoose.connect('mongodb://127.0.0.1:27017/urbanBites')
+mongoose.connect('mongodb://127.0.0.1:27017/ortensia') // Note: You can also rename the DB to ortensia here
 .then(() => console.log('Connected to MongoDB successfully!'))
 .catch(err => console.error('MongoDB connection error:', err));
 
@@ -34,7 +34,7 @@ const sessionConfig = {
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // 1 week
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7, 
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 };
@@ -49,7 +49,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// Global variables middleware (Passes flash messages and user info to ALL EJS pages automatically)
+// Global variables middleware 
 app.use((req, res, next) => {
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
@@ -57,22 +57,16 @@ app.use((req, res, next) => {
     next();
 });
 
+// --- Routes ---
 
-// ===============================
-//          ROUTES
-// ===============================
-
-// --- Landing Page ---
 app.get('/', (req, res) => {
     res.render('home');
 });
 
-// --- Dashboard / Index ---
 app.get('/index', (req, res) => {
     res.render('index');
 });
 
-// --- Authentication ---
 app.get('/signup', (req, res) => {
     res.render('signup');
 });
@@ -83,7 +77,8 @@ app.post('/signup', async (req, res) => {
         const user = new User({ username, email });
         await User.register(user, password);
         
-        req.flash('success', 'Welcome to Urban Bites! Please log in to enter the site.');
+        // Updated name in flash message!
+        req.flash('success', 'Welcome to Ōrtensia! Please log in to enter the site.');
         res.redirect('/login');
     } catch (e) {
         req.flash('error', e.message);
@@ -111,13 +106,10 @@ app.get('/logout', (req, res, next) => {
     });
 });
 
-// --- Primary Pages ---
-
 app.get('/menu', (req, res) => {
     res.render('menu');
 });
 
-// --- Delivery Routes ---
 app.get('/delivery', async (req, res) => {
     try {
         const orders = await Order.find({}); 
@@ -128,7 +120,6 @@ app.get('/delivery', async (req, res) => {
     }
 });
 
-// Handles order form submission
 app.post('/delivery', async (req, res) => {
     try {
         const newOrder = new Order(req.body);
@@ -142,8 +133,6 @@ app.post('/delivery', async (req, res) => {
     }
 });
 
-
-// --- Reservation Routes ---
 app.get('/reservation', async (req, res) => {
     try {
         const reservations = await Reservation.find({}); 
@@ -154,7 +143,6 @@ app.get('/reservation', async (req, res) => {
     }
 });
 
-// Handles reservation form submission
 app.post('/reservation', async (req, res) => {
     try {
         const newReservation = new Reservation(req.body);
@@ -169,7 +157,7 @@ app.post('/reservation', async (req, res) => {
 });
 
 // --- Start Server ---
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
