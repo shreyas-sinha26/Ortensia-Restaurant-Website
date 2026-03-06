@@ -12,18 +12,95 @@
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
         }
+
         body {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            /* Lily Banse's food photo with a dark overlay */
+            background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), 
+                        url('/img/lily-banse--YHSwy6uqvk-unsplash.jpg') no-repeat center center;
+            background-size: cover;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
         }
+
+        /* --- Back to Home Button --- */
+        .back-home-btn {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            /* Initially hidden for GSAP */
+            opacity: 0;
+            transform: translateX(-20px);
+            z-index: 10;
+        }
+
+        .back-home-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px) !important; /* overrides GSAP transform on hover */
+        }
+
+        /* --- Flash Message Toast Styles --- */
+        .flash-container {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            pointer-events: none;
+            width: 90%;
+            max-width: 400px;
+        }
+        
+        .flash-message {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 16px 24px;
+            border-radius: 50px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            font-size: 15px;
+            opacity: 0; 
+            transform: translateY(-30px);
+        }
+
+        .flash-message.error {
+            color: #d9534f;
+            border-left: 5px solid #d9534f;
+        }
+
+        .flash-message.success {
+            color: #28a745;
+            border-left: 5px solid #28a745;
+        }
+
+        .flash-icon {
+            font-size: 18px;
+        }
+
+        /* --- Form Styles --- */
         .form-container {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             padding: 40px 30px;
             border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
             width: 100%;
             max-width: 400px;
             text-align: center;
@@ -31,11 +108,13 @@
             opacity: 0; 
             transform: translateY(30px);
         }
+
         .form-container h2 {
             font-size: 28px;
             color: #333;
             margin-bottom: 30px;
         }
+
         .input-group {
             margin-bottom: 20px;
             text-align: left;
@@ -43,12 +122,14 @@
             opacity: 0; 
             transform: translateY(20px);
         }
+
         .input-group label {
             display: block;
             margin-bottom: 8px;
             color: #555;
             font-weight: 500;
         }
+
         .input-group input {
             width: 100%;
             padding: 12px 15px;
@@ -57,11 +138,13 @@
             font-size: 15px;
             transition: all 0.3s ease;
         }
+
         .input-group input:focus {
-            border-color: #ff9a9e;
+            border-color: #ff758c;
             outline: none;
-            box-shadow: 0 0 8px rgba(255, 154, 158, 0.4);
+            box-shadow: 0 0 8px rgba(255, 117, 140, 0.4);
         }
+
         .submit-btn {
             width: 100%;
             padding: 12px;
@@ -76,15 +159,19 @@
             /* Initially hidden for GSAP */
             opacity: 0; 
         }
+
         .submit-btn:hover {
             background: #ff5e78;
         }
+
         .login-link {
             margin-top: 20px;
             font-size: 14px;
             color: #666;
-            opacity: 0; /* Initially hidden for GSAP */
+            /* Initially hidden for GSAP */
+            opacity: 0; 
         }
+
         .login-link a {
             color: #ff758c;
             text-decoration: none;
@@ -94,8 +181,27 @@
 </head>
 <body>
 
+    <a href="/" class="back-home-btn">⬅ Back to Home</a>
+
+    <div class="flash-container">
+        <% if(typeof error !== 'undefined' && error.length > 0) { %>
+            <div class="flash-message error">
+                <span class="flash-icon">⚠️</span> 
+                <span><%= error %></span>
+            </div>
+        <% } %>
+
+        <% if(typeof success !== 'undefined' && success.length > 0) { %>
+            <div class="flash-message success">
+                <span class="flash-icon">✅</span> 
+                <span><%= success %></span>
+            </div>
+        <% } %>
+    </div>
+
     <div class="form-container">
         <h2 class="gsap-title">Join Urban Bites</h2>
+        
         <form action="/signup" method="POST">
             <div class="input-group gsap-item">
                 <label for="username">Username</label>
@@ -116,8 +222,39 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script>
-        // GSAP Animations
         document.addEventListener("DOMContentLoaded", () => {
+            // --- Back Button Animation ---
+            gsap.to(".back-home-btn", {
+                duration: 0.6,
+                opacity: 1,
+                x: 0,
+                ease: "power2.out",
+                delay: 0.1
+            });
+
+            // --- Flash Message Animation ---
+            const flashMessages = document.querySelectorAll(".flash-message");
+            if (flashMessages.length > 0) {
+                const flashTimeline = gsap.timeline();
+                
+                flashTimeline.to(".flash-message", {
+                    duration: 0.6,
+                    opacity: 1,
+                    y: 0,
+                    stagger: 0.15,
+                    ease: "back.out(1.5)"
+                })
+                .to(".flash-message", {
+                    duration: 0.5,
+                    opacity: 0,
+                    y: -30,
+                    stagger: 0.1,
+                    ease: "power2.in",
+                    delay: 3.5
+                });
+            }
+
+            // --- Form Animations ---
             // Animate the main container
             gsap.to(".form-container", {
                 duration: 0.8,
