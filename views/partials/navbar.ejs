@@ -1,0 +1,48 @@
+<!-- Glassmorphism Navbar Partial -->
+<nav class="navbar fixed top-0 left-0 w-full z-50 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-20">
+            <div class="flex-shrink-0 gsap-nav" style="opacity: 0; transform: translateY(-20px);">
+                <a href="/index" class="title-font text-2xl font-bold text-gray-800 tracking-tight"
+                    style="text-decoration: none;">
+                    Ōrten<span class="italic" style="color: var(--primary-orange);">sia</span>
+                </a>
+            </div>
+
+            <div class="hidden md:flex space-x-8 items-center gsap-nav"
+                style="opacity: 0; transform: translateY(-20px);">
+                <a href="/index" class="nav-link font-medium <%= path === '/index' ? 'active' : '' %>">Home</a>
+                <a href="/menu" class="nav-link font-medium <%= path === '/menu' ? 'active' : '' %>">Menu</a>
+                <a href="/delivery"
+                    class="nav-link font-medium <%= path === '/delivery' ? 'active' : '' %>">Delivery</a>
+                <a href="/reservation"
+                    class="nav-link font-medium <%= path === '/reservation' ? 'active' : '' %>">Reservations</a>
+
+                <div class="pl-4 border-l border-gray-300 flex items-center gap-4">
+                    <% if(typeof currentUser !=='undefined' && currentUser) { %>
+                        <span class="text-sm font-medium text-gray-500">Hi, <%= currentUser.username %></span>
+                        <a href="/logout"
+                            class="bg-gray-800 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-orange-500 transition-colors shadow-md"
+                            style="text-decoration: none;">Log Out</a>
+                        <% } else { %>
+                            <a href="/login"
+                                class="bg-orange-500 text-white px-5 py-2 rounded-full text-sm font-medium transition-colors shadow-md"
+                                style="text-decoration: none; background-color: var(--primary-orange);">Log In</a>
+                            <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        if (typeof gsap !== 'undefined') {
+            gsap.to(".gsap-nav", { duration: 0.8, opacity: 1, y: 0, stagger: 0.1, ease: "power3.out" });
+        } else {
+            document.querySelectorAll('.gsap-nav').forEach(el => {
+                el.style.opacity = 1; el.style.transform = 'translateY(0)';
+            });
+        }
+    });
+</script>
