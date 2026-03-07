@@ -1,133 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/css/delivery.css">
-  <title>Home Delivery</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery - Ōrtensia</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Text:wght@100;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/delivery.css">
 </head>
 <body>
-  <nav>
-    <ul class="nav-flex-row">
-      <li class="nav-item"><a href="/index">Main Page</a></li>
-      <li class="nav-item"><a href="/reservation">Reservation</a></li>
-      <li class="nav-item"><a href="/menu">Menu</a></li>
-      <li class="nav-item"><a href="/delivery">Home Delivery</a></li>
-    </ul>
-  </nav>
+    <header>
+        <nav class="nav-flex-row">
+            <div class="nav-brand">
+                <a href="/">Ōrtensia</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/menu">Menu</a></li>
+                <li><a href="/delivery" class="active">Delivery</a></li>
+                <li><a href="/reservation">Reservation</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  <section class="delivery-section">
-    <div class="container">
-      <h2>Order Food for Delivery</h2>
-      <form id="orderForm" action="/submit-order" method="POST" onsubmit="return validateForm();">
-        <div class="customer-info">
-          <label for="customerName">Name:</label>
-          <input type="text" id="customerName" name="name" required>
-
-          <label for="customerPhone">Phone:</label>
-          <input type="tel" id="customerPhone" name="phone" pattern="^[0-9]{10}$" title="Enter a valid 10-digit phone number" required>
-
-          <label for="customerAddress">Address:</label>
-          <textarea id="customerAddress" name="address" required></textarea>
+    <main class="page-container">
+        <div class="form-card">
+            <h2 class="page-title">Delivery Details</h2>
+            <p class="page-subtitle">We will deliver your order hot and fresh right to your doorstep.</p>
+            
+            <form action="/delivery" method="POST" class="elegant-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="+1 234 567 8900">
+                </div>
+                <div class="form-group">
+                    <label for="address">Delivery Address</label>
+                    <textarea id="address" name="address" rows="3" required placeholder="123 Main St, Apt 4B"></textarea>
+                </div>
+                <button type="submit" class="btn-primary">Proceed to Order</button>
+            </form>
         </div>
+    </main>
 
-        <div class="menu-category">
-          <h3>Appetizers</h3>
-          <label><input type="checkbox" class="menu-item" name="items" value="Bruschetta - ₹800" data-price="800"> Bruschetta - ₹800</label><br>
-          <label><input type="checkbox" class="menu-item" name="items" value="Stuffed Mushrooms - ₹1000" data-price="1000"> Stuffed Mushrooms - ₹1000</label><br>
-          <label><input type="checkbox" class="menu-item" name="items" value="Garlic Bread - ₹600" data-price="600"> Garlic Bread - ₹600</label><br>
-        </div>
-
-        <div class="menu-category">
-          <h3>Main Courses</h3>
-          <label><input type="checkbox" class="menu-item" name="items" value="Grilled Salmon - ₹1800" data-price="1800"> Grilled Salmon - ₹1800</label><br>
-          <label><input type="checkbox" class="menu-item" name="items" value="Pasta Carbonara - ₹1500" data-price="1500"> Pasta Carbonara - ₹1500</label><br>
-        </div>
-
-        <div class="menu-category">
-          <h3>Beverages</h3>
-          <label><input type="checkbox" class="menu-item" name="items" value="Soft Drink - ₹250" data-price="250"> Soft Drink - ₹250</label><br>
-          <label><input type="checkbox" class="menu-item" name="items" value="Coffee - ₹300" data-price="300"> Coffee - ₹300</label><br>
-        </div>
-
-        <div class="order-summary">
-          <h3>Total: ₹<span id="totalPrice">0</span></h3>
-          <input type="hidden" id="totalPriceInput" name="totalPrice">
-          <button type="submit" class="btn-primary">Place Order</button>
-        </div>
-      </form>
-    </div>
-  </section>
-
-  <div class="submitted-orders">
-    <h2>Submitted Orders</h2>
-    <ul class="order-list">
-      <% orders.forEach(order => { %>
-        <li>
-          <strong>Name:</strong> <%= order.name %><br>
-          <strong>Phone:</strong> <%= order.phone %><br>
-          <strong>Address:</strong> <%= order.address %><br>
-          <strong>Items:</strong> <%= order.items.join(', ') %><br>
-          <strong>Total Price:</strong> ₹<%= order.totalPrice %>
-        </li>
-      <% }) %>
-    </ul>
-  </div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const menuItems = document.querySelectorAll('.menu-item');
-      const totalPriceEl = document.getElementById('totalPrice');
-      const totalPriceInput = document.getElementById('totalPriceInput');
-  
-      menuItems.forEach(item => {
-        item.addEventListener('change', () => {
-          let total = 0;
-          document.querySelectorAll('.menu-item:checked').forEach(checkedItem => {
-            total += parseFloat(checkedItem.getAttribute('data-price'));
-          });
-          totalPriceEl.textContent = total.toFixed(2);
-          totalPriceInput.value = total.toFixed(2);
-        });
-      });
-  
-      const orderForm = document.getElementById('orderForm');
-      orderForm.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Prevent default form submission
-  
-        const customerName = document.getElementById("customerName").value.trim();
-        const customerPhone = document.getElementById("customerPhone").value.trim();
-        const customerAddress = document.getElementById("customerAddress").value.trim();
-        const selectedItems = Array.from(document.querySelectorAll('.menu-item:checked')).map(item => item.value);
-        const total = parseFloat(totalPriceEl.textContent.trim());
-  
-        if (!customerName || !customerPhone || !customerAddress || selectedItems.length === 0) {
-          alert("Please fill in all fields and select at least one item.");
-          return;
-        }
-  
-        try {
-          const response = await fetch('/submit-order', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: customerName, phone: customerPhone, address: customerAddress, items: selectedItems, totalPrice: total }),
-          });
-  
-          if (response.ok) {
-            alert("Order placed successfully!");
-            window.location.reload();
-          } else {
-            const errorData = await response.json();
-            alert(`Error: ${errorData.message}`);
-          }
-        } catch (err) {
-          console.error("Error:", err);
-          alert("An error occurred while placing the order.");
-        }
-      });
-    });
-  </script>
-  
-  <script src="/js/delivery.js"></script>
 </body>
 </html>
