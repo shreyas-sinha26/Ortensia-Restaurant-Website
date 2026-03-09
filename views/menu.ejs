@@ -1,42 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu - Ōrtensia</title>
-
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,600&family=Poppins:wght@300;400;500;600&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="/css/global.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
-
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Poppins', sans-serif;
             background-color: #fafafa;
             color: #333;
         }
-
-        .title-font {
-            font-family: 'Playfair Display', serif;
-        }
-
+        
+        .title-font { font-family: 'Playfair Display', serif; }
+        
         /* Hero Section */
         .hero-section {
-            /* Using the high-end food layout image for the menu hero */
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)),
-                url('/img/petr-sevcovic-qE1jxYXiwOA-unsplash.jpg') no-repeat center center;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)), 
+                        url('https://www.hampers.com/cdn/shop/collections/Food-wine-category-banner.jpg?v=1767628218') ;
             background-size: cover;
             background-attachment: fixed;
             height: 45vh;
@@ -45,15 +33,41 @@
             justify-content: center;
             text-align: center;
             color: white;
-            margin-top: 80px;
-            /* Offset for fixed navbar */
+            margin-top: 80px; 
         }
 
-        /* Header section removed from here since in global.css */
+        /* Glassmorphism Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Custom Underline Animation for Nav Links */
+        .nav-link {
+            position: relative;
+            color: #4a4a4a;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0%;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #f97316; 
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover { color: #f97316; }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+        .nav-link.active { color: #f97316; }
+
         /* Menu Layout Styles */
         .menu-category-divider {
             height: 1px;
-            background: linear-gradient(90deg, rgba(229, 231, 235, 0) 0%, rgba(229, 231, 235, 1) 50%, rgba(229, 231, 235, 0) 100%);
+            background: linear-gradient(90deg, rgba(229,231,235,0) 0%, rgba(229,231,235,1) 50%, rgba(229,231,235,0) 100%);
             margin: 4rem 0;
         }
 
@@ -61,299 +75,333 @@
             position: relative;
             padding-bottom: 1.5rem;
             border-bottom: 1px dashed #e5e7eb;
+            height: 100%;
         }
-
-        .menu-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .price-tag {
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            font-size: 1.25rem;
-        }
+        .menu-item:last-child { border-bottom: none; padding-bottom: 0; }
 
         /* Initial states for GSAP */
-        .gsap-hero {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-
-        .gsap-category {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .gsap-item {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
+        .gsap-nav { opacity: 0; transform: translateY(-20px); }
+        .gsap-hero { opacity: 0; transform: translateY(30px); }
+        .gsap-category { opacity: 0; transform: translateY(20px); }
+        .gsap-item { opacity: 0; transform: translateY(20px); }
+        
         /* Floating Flash Messages */
         .flash-container {
-            position: fixed;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            pointer-events: none;
-            width: 90%;
-            max-width: 400px;
+            position: fixed; top: 100px; left: 50%; transform: translateX(-50%); z-index: 1000;
+            display: flex; flex-direction: column; gap: 15px; pointer-events: none; width: 90%; max-width: 400px;
         }
-
         .flash-message {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 16px 24px;
-            border-radius: 50px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 500;
-            font-size: 15px;
-            opacity: 0;
-            transform: translateY(-30px);
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); padding: 16px 24px; border-radius: 50px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2); display: flex; align-items: center; gap: 12px;
+            font-weight: 500; font-size: 15px; opacity: 0; transform: translateY(-30px);
         }
-
-        .flash-message.error {
-            color: #d9534f;
-            border-left: 5px solid #d9534f;
-        }
-
-        .flash-message.success {
-            color: #28a745;
-            border-left: 5px solid #28a745;
-        }
+        .flash-message.error { color: #d9534f; border-left: 5px solid #d9534f; }
+        .flash-message.success { color: #28a745; border-left: 5px solid #28a745; }
     </style>
 </head>
-
 <body>
 
     <div class="flash-container">
-        <% if(typeof error !=='undefined' && error.length> 0) { %>
-            <div class="flash-message error"><span>⚠️</span> <span>
-                    <%= error %>
-                </span></div>
-            <% } %>
-                <% if(typeof success !=='undefined' && success.length> 0) { %>
-                    <div class="flash-message success"><span>✅</span> <span>
-                            <%= success %>
-                        </span></div>
-                    <% } %>
+        <% if(typeof error !== 'undefined' && error.length > 0) { %>
+            <div class="flash-message error"><span>⚠️</span> <span><%= error %></span></div>
+        <% } %>
+        <% if(typeof success !== 'undefined' && success.length > 0) { %>
+            <div class="flash-message success"><span>✅</span> <span><%= success %></span></div>
+        <% } %>
     </div>
 
-    <%- include('partials/navbar') %>
-
-        <header class="hero-section">
-            <div class="max-w-4xl px-4">
-                <h1 class="gsap-hero title-font text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
-                    Culinary Excellence
-                </h1>
-                <p class="gsap-hero text-lg font-light text-gray-200 drop-shadow-md">
-                    A selection of seasonal, locally-sourced dishes crafted with passion.
-                </p>
-            </div>
-        </header>
-
-        <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-
-            <section class="menu-section">
-                <div class="text-center mb-12 gsap-category">
-                    <span class="text-orange-500 font-semibold tracking-widest uppercase text-xs">To Begin</span>
-                    <h2 class="title-font text-4xl font-bold text-gray-800 mt-2">Starters</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
-                    <div class="menu-item gsap-item">
-                        <div class="flex justify-between items-baseline mb-2">
-                            <h3 class="title-font text-xl font-bold text-gray-800">Truffle Arancini</h3>
-                            <span class="text-orange-500 price-tag">$14</span>
-                        </div>
-                        <p class="text-gray-500 text-sm font-light leading-relaxed">Crispy arborio rice spheres, wild
-                            forest mushroom, black truffle aioli, and shaved parmesan.</p>
-                    </div>
-
-                    <div class="menu-item gsap-item">
-                        <div class="flex justify-between items-baseline mb-2">
-                            <h3 class="title-font text-xl font-bold text-gray-800">Tuna Tartare</h3>
-                            <span class="text-orange-500 price-tag">$18</span>
-                        </div>
-                        <p class="text-gray-500 text-sm font-light leading-relaxed">Yellowfin tuna, avocado purée,
-                            citrus ponzu dressing, served with taro root chips.</p>
-                    </div>
-
-                    <div class="menu-item gsap-item">
-                        <div class="flex justify-between items-baseline mb-2">
-                            <h3 class="title-font text-xl font-bold text-gray-800">Burrata Caprese</h3>
-                            <span class="text-orange-500 price-tag">$16</span>
-                        </div>
-                        <p class="text-gray-500 text-sm font-light leading-relaxed">Fresh Italian burrata, heirloom
-                            tomatoes, aged balsamic reduction, and sweet basil emulsion.</p>
-                    </div>
-
-                    <div class="menu-item gsap-item">
-                        <div class="flex justify-between items-baseline mb-2">
-                            <h3 class="title-font text-xl font-bold text-gray-800">Wagyu Carpaccio</h3>
-                            <span class="text-orange-500 price-tag">$22</span>
-                        </div>
-                        <p class="text-gray-500 text-sm font-light leading-relaxed">Thinly sliced wagyu beef, caper
-                            berries, quail egg, and a light mustard vinaigrette.</p>
-                    </div>
-                </div>
-            </section>
-
-            <div class="menu-category-divider"></div>
-
-            <section class="menu-section">
-                <div class="text-center mb-12 gsap-category">
-                    <span class="text-orange-500 font-semibold tracking-widest uppercase text-xs">The Highlights</span>
-                    <h2 class="title-font text-4xl font-bold text-gray-800 mt-2">Main Courses</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
-                    <div class="menu-item gsap-item">
-                        <div class="flex justify-between items-baseline mb-2">
-                            <h3 class="title-font text-xl font-bold text-gray-800">Seared Scallops</h3>
-                            <span class="text-orange-500 price-tag">$34</span>
-                        </div>
-                        <p class="text-gray-500 text-sm font-light leading-relaxed">Jumbo Hokkaido scallops, cauliflower
-                            purée, roasted asparagus, and brown butter foam.</p>
-                    </div>
-
-                    <div class="menu-item gsap-item">
-                        <div class="flex justify-between items-baseline mb-2">
-                            <h3 class="title-font text-xl font-bold text-gray-800">Duck Breast A L'Orange</h3>
-                            <span class="text-orange-500 price-tag">$38</span>
-                        </div>
-                        <p class="text-gray-500 text-sm font-light leading-relaxed">Pan-seared duck breast, sweet potato
-                            mash, braised endive, finished with a spiced blood orange glaze.</p>
-                    </div>
-
-                    <div class="menu-item gsap-item">
-                        <div class="flex justify-between items-baseline mb-2">
-                            <h3 class="title-font text-xl font-bold text-gray-800">Mushroom Risotto</h3>
-                            <span class="text-orange-500 price-tag">$26</span>
-                        </div>
-                        <p class="text-gray-500 text-sm font-light leading-relaxed">Carnaroli rice cooked in a rich
-                            mushroom broth, topped with crispy enoki and a drizzle of white truffle oil.</p>
-                    </div>
-
-                    <div class="menu-item gsap-item">
-                        <div class="flex justify-between items-baseline mb-2">
-                            <h3 class="title-font text-xl font-bold text-gray-800">Filet Mignon</h3>
-                            <span class="text-orange-500 price-tag">$45</span>
-                        </div>
-                        <p class="text-gray-500 text-sm font-light leading-relaxed">8oz center-cut filet, garlic potato
-                            gratin, charred broccolini, and a rich red wine demi-glace.</p>
-                    </div>
-                </div>
-            </section>
-
-            <div class="menu-category-divider"></div>
-
-            <section class="menu-section">
-                <div class="text-center mb-12 gsap-category">
-                    <span class="text-orange-500 font-semibold tracking-widest uppercase text-xs">Sweet Endings</span>
-                    <h2 class="title-font text-4xl font-bold text-gray-800 mt-2">Desserts</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
-                    <div class="menu-item gsap-item">
-                        <div class="flex justify-between items-baseline mb-2">
-                            <h3 class="title-font text-xl font-bold text-gray-800">Lavender Panna Cotta</h3>
-                            <span class="text-orange-500 price-tag">$12</span>
-                        </div>
-                        <p class="text-gray-500 text-sm font-light leading-relaxed">Silky Italian cream infused with
-                            organic lavender, topped with a mixed berry compote.</p>
-                    </div>
-
-                    <div class="menu-item gsap-item">
-                        <div class="flex justify-between items-baseline mb-2">
-                            <h3 class="title-font text-xl font-bold text-gray-800">Dark Chocolate Soufflé</h3>
-                            <span class="text-orange-500 price-tag">$14</span>
-                        </div>
-                        <p class="text-gray-500 text-sm font-light leading-relaxed">Molten 72% cacao cake, served warm
-                            alongside Madagascar vanilla bean gelato.</p>
-                    </div>
-                </div>
-
-                <div class="mt-16 text-center gsap-item">
-                    <p class="text-gray-500 italic mb-6">Ready to experience these flavors?</p>
-                    <a href="/reservation"
-                        class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3.5 rounded-full shadow-lg shadow-orange-500/30 transition-transform hover:-translate-y-1">
-                        Book a Table
+    <nav class="navbar fixed top-0 w-full z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex-shrink-0 gsap-nav">
+                    <a href="/index" class="title-font text-2xl font-bold text-gray-800 tracking-tight">
+                        Ōrten<span class="text-orange-500 italic">sia</span>
                     </a>
                 </div>
-            </section>
-
-        </main>
-
-        <footer class="bg-gray-900 text-gray-400 py-12 mt-10">
-            <div class="max-w-7xl mx-auto px-4 text-center">
-                <h2 class="title-font text-3xl font-bold text-white mb-2">Ōrten<span
-                        class="text-orange-500 italic">sia</span></h2>
-                <p class="text-sm opacity-60">© 2024 Ōrtensia Restaurant. All rights reserved.</p>
+                
+                <div class="hidden md:flex space-x-8 items-center gsap-nav">
+                    <a href="/index" class="nav-link font-medium">Home</a>
+                    <a href="/menu" class="nav-link font-medium active">Menu</a>
+                    <a href="/delivery" class="nav-link font-medium">Delivery</a>
+                    <a href="/reservation" class="nav-link font-medium">Reservations</a>
+                    
+                    <div class="pl-4 border-l border-gray-300 flex items-center gap-4">
+                        <% if(typeof currentUser !== 'undefined' && currentUser) { %>
+                            <span class="text-sm font-medium text-gray-500">Hi, <%= currentUser.username %></span>
+                            <a href="/logout" class="bg-gray-800 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-orange-500 transition-colors shadow-md">Log Out</a>
+                        <% } else { %>
+                            <a href="/login" class="bg-orange-500 text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-orange-600 transition-colors shadow-md shadow-orange-500/30">Log In</a>
+                        <% } %>
+                    </div>
+                </div>
             </div>
-        </footer>
+        </div>
+    </nav>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                gsap.registerPlugin(ScrollTrigger);
+    <header class="hero-section">
+        <div class="max-w-4xl px-4">
+            <h1 class="gsap-hero title-font text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
+                Culinary Excellence
+            </h1>
+            <p class="gsap-hero text-lg font-light text-gray-200 drop-shadow-md">
+                A comprehensive selection of seasonal, locally-sourced dishes crafted with passion.
+            </p>
+        </div>
+    </header>
 
-                // Flash Message Toast Animation
-                const flashMessages = document.querySelectorAll(".flash-message");
-                if (flashMessages.length > 0) {
-                    gsap.timeline()
-                        .to(".flash-message", { duration: 0.6, opacity: 1, y: 0, stagger: 0.15, ease: "back.out(1.5)", delay: 0.5 })
-                        .to(".flash-message", { duration: 0.5, opacity: 0, y: -30, stagger: 0.1, ease: "power2.in", delay: 3.5 });
-                }
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        
+        <section class="menu-section">
+            <div class="text-center mb-16 gsap-category">
+                <span class="text-orange-500 font-semibold tracking-widest uppercase text-xs">To Begin</span>
+                <h2 class="title-font text-4xl font-bold text-gray-800 mt-2">Starters</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Truffle Arancini</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Crispy arborio rice spheres, wild forest mushroom, black truffle aioli, and shaved parmesan.</p>
+                </div>
+                
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Yellowfin Tuna Tartare</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Hand-cut tuna, avocado purée, citrus ponzu dressing, sesame, served with crisp taro root chips.</p>
+                </div>
 
-                // Navbar and Hero Animations
-                gsap.to(".gsap-nav", { duration: 0.8, opacity: 1, y: 0, stagger: 0.1, ease: "power3.out" });
-                gsap.to(".gsap-hero", { duration: 1, opacity: 1, y: 0, stagger: 0.2, ease: "power3.out", delay: 0.2 });
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Burrata Caprese</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Fresh Italian burrata, heirloom tomatoes, aged balsamic reduction, and sweet basil emulsion.</p>
+                </div>
 
-                // ScrollTrigger Animations for Menu Categories and Items
-                const categories = document.querySelectorAll('.menu-section');
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Wagyu Beef Carpaccio</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Thinly sliced wagyu, caper berries, micro arugula, quail egg, and a light Dijon mustard vinaigrette.</p>
+                </div>
 
-                categories.forEach(section => {
-                    const title = section.querySelector('.gsap-category');
-                    const items = section.querySelectorAll('.gsap-item');
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Roasted Bone Marrow</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Herb and parsley salad, roasted garlic crust, served with toasted sourdough and flaky sea salt.</p>
+                </div>
 
-                    // Animate category titles
-                    gsap.to(title, {
-                        scrollTrigger: {
-                            trigger: section,
-                            start: "top 80%", // Animates when the top of the section hits 80% of the viewport height
-                        },
-                        duration: 0.8,
-                        opacity: 1,
-                        y: 0,
-                        ease: "power3.out"
-                    });
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Oysters Rockefeller</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Half-dozen fresh East Coast oysters baked with wilted spinach, pernod cream, and a parmesan breadcrumb crust.</p>
+                </div>
 
-                    // Animate individual menu items staggering in
-                    gsap.to(items, {
-                        scrollTrigger: {
-                            trigger: section,
-                            start: "top 75%",
-                        },
-                        duration: 0.8,
-                        opacity: 1,
-                        y: 0,
-                        stagger: 0.15,
-                        ease: "power3.out",
-                        delay: 0.2
-                    });
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Escargot Persillade</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Classic French snails baked in a rich garlic, parsley, and white wine butter, served with a toasted baguette.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Smoked Salmon Blinis</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">House-smoked salmon ribbons over warm buckwheat blinis, topped with lemon crème fraîche and sustainable caviar.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="menu-category-divider"></div>
+
+        <section class="menu-section">
+            <div class="text-center mb-16 gsap-category">
+                <span class="text-orange-500 font-semibold tracking-widest uppercase text-xs">The Highlights</span>
+                <h2 class="title-font text-4xl font-bold text-gray-800 mt-2">Main Courses</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Seared Hokkaido Scallops</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Jumbo scallops, silky cauliflower purée, roasted asparagus, and brown butter hazelnut foam.</p>
+                </div>
+                
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Duck Breast A L'Orange</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Crispy pan-seared duck breast, sweet potato mash, braised endive, finished with a spiced blood orange glaze.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Mushroom & Truffle Risotto</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Carnaroli rice cooked in a rich wild mushroom broth, topped with crispy enoki and a drizzle of white truffle oil.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">8oz Filet Mignon</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Center-cut grass-fed filet, garlic potato gratin, charred broccolini, and a rich red wine demi-glace.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Pan-Roasted Halibut</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Fresh caught halibut paired with saffron beurre blanc, charred baby leeks, and roasted fingerling potatoes.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Braised Lamb Shank</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Slow-cooked for 12 hours, served over creamy parmesan polenta, topped with fresh gremolata and rosemary jus.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Lobster & Corn Ravioli</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Handmade pasta squares filled with fresh lobster meat, resting in a sweet corn purée and lobster bisque foam.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">A5 Wagyu Ribeye</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Premium Japanese Wagyu cooked over binchotan charcoal, served with black garlic butter and blistered asparagus.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Chilean Sea Bass</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Miso-glazed sea bass, served over a bed of forbidden black rice, bok choy, and a ginger-soy reduction.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Venison Loin</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Pepper-crusted venison, blackberry port jus, parsnip fondant, and roasted caramelized Brussels sprouts.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="menu-category-divider"></div>
+
+        <section class="menu-section">
+            <div class="text-center mb-16 gsap-category">
+                <span class="text-orange-500 font-semibold tracking-widest uppercase text-xs">For The Table</span>
+                <h2 class="title-font text-4xl font-bold text-gray-800 mt-2">Sides & Shareables</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Pommes Purée</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Robuchon-style whipped potatoes blended with rich cultured butter and cream.</p>
+                </div>
+                
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Truffle Parmesan Fries</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Hand-cut potatoes tossed with fresh parsley, aged parmesan, and white truffle oil.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Charred Broccolini</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Fire-roasted broccolini, chili flakes, lemon zest, and toasted slivered almonds.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Wild Mushroom Fricassée</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">A blend of seasonal wild mushrooms sautéed with thyme, garlic, and a splash of cognac.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Lobster Mac & Cheese</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Campanelle pasta folded into a rich fontina and gruyere sauce, topped with buttered breadcrumbs.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Maple Glazed Carrots</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Oven-roasted heirloom carrots finished with a dark maple glaze and crushed pecans.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="menu-category-divider"></div>
+
+        <section class="menu-section">
+            <div class="text-center mb-16 gsap-category">
+                <span class="text-orange-500 font-semibold tracking-widest uppercase text-xs">Sweet Endings</span>
+                <h2 class="title-font text-4xl font-bold text-gray-800 mt-2">Desserts</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Lavender Panna Cotta</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Silky Italian cream infused with organic lavender, topped with a mixed berry compote.</p>
+                </div>
+                
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Dark Chocolate Soufflé</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Molten 72% cacao cake, baked to order and served warm alongside Madagascar vanilla bean gelato.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Classic Crème Brûlée</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Rich vanilla bean custard beneath a delicate layer of caramelized sugar crust, served with fresh berries.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Artisan Lemon Tart</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Tangy lemon curd in a buttery shortbread crust, topped with perfectly torched meringue and raspberry coulis.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Classic Tiramisu</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Espresso-soaked savoiardi ladyfingers layered with whipped mascarpone cream and finished with a rich cocoa dusting.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Matcha Honeycomb Mousse</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Light Japanese matcha mousse encased in a white chocolate dome, served with golden honeycomb shards.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Pistachio Mille-Feuille</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">Crispy layers of puff pastry alternated with rich Sicilian pistachio cream and dark chocolate shavings.</p>
+                </div>
+
+                <div class="menu-item gsap-item">
+                    <h3 class="title-font text-xl font-bold text-gray-800 mb-2">Chef's Cheese Board</h3>
+                    <p class="text-gray-500 text-sm font-light leading-relaxed">A curated selection of local and imported cheeses, honeycomb, fresh seasonal fruit, and house-made artisanal crisps.</p>
+                </div>
+            </div>
+            
+            <div class="mt-20 text-center gsap-item">
+                <p class="text-gray-500 italic mb-6">Ready to experience these flavors?</p>
+                <a href="/reservation" class="inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold px-10 py-4 rounded-full shadow-lg shadow-orange-500/30 transition-transform hover:-translate-y-1">
+                    Book your table
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 text-gray-400 py-12 mt-10">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="title-font text-3xl font-bold text-white mb-2">Ōrten<span class="text-orange-500 italic">sia</span></h2>
+            <p class="text-sm opacity-60">© 2024 Ōrtensia Restaurant. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            gsap.registerPlugin(ScrollTrigger);
+
+            const flashMessages = document.querySelectorAll(".flash-message");
+            if (flashMessages.length > 0) {
+                gsap.timeline()
+                    .to(".flash-message", { duration: 0.6, opacity: 1, y: 0, stagger: 0.15, ease: "back.out(1.5)", delay: 0.5 })
+                    .to(".flash-message", { duration: 0.5, opacity: 0, y: -30, stagger: 0.1, ease: "power2.in", delay: 3.5 });
+            }
+
+            gsap.to(".gsap-nav", { duration: 0.8, opacity: 1, y: 0, stagger: 0.1, ease: "power3.out" });
+            gsap.to(".gsap-hero", { duration: 1, opacity: 1, y: 0, stagger: 0.2, ease: "power3.out", delay: 0.2 });
+
+            const categories = document.querySelectorAll('.menu-section');
+            
+            categories.forEach(section => {
+                const title = section.querySelector('.gsap-category');
+                const items = section.querySelectorAll('.gsap-item');
+
+                gsap.to(title, {
+                    scrollTrigger: { trigger: section, start: "top 80%" },
+                    duration: 0.8, opacity: 1, y: 0, ease: "power3.out"
+                });
+
+                gsap.to(items, {
+                    scrollTrigger: { trigger: section, start: "top 75%" },
+                    duration: 0.8, opacity: 1, y: 0, stagger: 0.1, ease: "power3.out", delay: 0.2
                 });
             });
-        </script>
+        });
+    </script>
 </body>
-
 </html>
